@@ -28,6 +28,8 @@
 #include <motor.h>
 #include "string.h"
 #include <stdio.h>
+#include "PID.h"
+#include "log.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -101,26 +103,24 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_USART2_UART_Init();
+  MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim4);
   Motor_Init();
-
-
+  Motor_PID_Init(0.02f, 0.05f, 0.00f);
+  //Motor_PID_SetTarget(200, B);
+  Motor_SetSpeed(20,B);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    //memset(message_R, 0, sizeof(message_R)), memset(message_L, 0, sizeof(message_L));
-    sprintf(message_R, "page0.n1.val=%d\xff\xff\xff", (int16_t)Speed_R);
-    HAL_UART_Transmit(&huart2, (uint8_t *)message_R, strlen(message_R),HAL_MAX_DELAY);
-    sprintf(message_L, "page0.n0.val=%d\xff\xff\xff", (int16_t)Speed_L);
-    HAL_UART_Transmit(&huart2, (uint8_t *)message_L, strlen(message_L),HAL_MAX_DELAY);
-    Motor_SetSpeed_L(80);
-    Motor_SetSpeed_R(80);
-    Motor_Get_Speed();
-
-
+    // sprintf(message_R, "page0.n1.val=%d\xff\xff\xff", (int16_t)Speed_R);
+    // HAL_UART_Transmit(&huart2, (uint8_t *)message_R, strlen(message_R),HAL_MAX_DELAY);
+    // sprintf(message_L, "page0.n0.val=%d\xff\xff\xff", (int)__HAL_TIM_GET_COMPARE(&htim1, TIM_CHANNEL_1));
+    // HAL_UART_Transmit(&huart2, (uint8_t *)message_L, strlen(message_L),HAL_MAX_DELAY);
+    // HAL_Delay(50);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -168,7 +168,16 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  // 判断是否是TIM4触发的中断
+  if(htim->Instance == TIM4)
+  {
+    log_uprintf(&huart3,"%d,%d\n", (int)Speed_R, (int)Speed_L);
+    Motor_Get_Speed();   // 执行编码器测速
+    //Motor_PID_Enforce(); // 执行PID闭环调速
+  }
+}
 /* USER CODE END 4 */
 
 /**

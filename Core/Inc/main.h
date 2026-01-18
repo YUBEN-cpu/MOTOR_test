@@ -71,12 +71,12 @@ void Error_Handler(void);
 #define Left_wheel_F_GPIO_Port GPIOB
 #define PWM1_Pin GPIO_PIN_8
 #define PWM1_GPIO_Port GPIOA
+#define PWM2_Pin GPIO_PIN_9
+#define PWM2_GPIO_Port GPIOA
 #define Right_wheel_B_Pin GPIO_PIN_6
 #define Right_wheel_B_GPIO_Port GPIOB
 #define Right_wheel_F_Pin GPIO_PIN_7
 #define Right_wheel_F_GPIO_Port GPIOB
-#define PWM2_Pin GPIO_PIN_8
-#define PWM2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

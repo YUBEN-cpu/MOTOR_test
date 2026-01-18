@@ -36,7 +36,9 @@ add_executable(${CMAKE_PROJECT_NAME}
         Core/Src/pid.c
         Core/Inc/pid.h
         Core/Src/motor.c
-        Core/Inc/motor.h)
+        Core/Inc/motor.h
+        tool/log.c
+)
 
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
@@ -48,11 +50,14 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
+
     # Add user sources here
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+
+        tool
     # Add user defined include paths
 )
 
